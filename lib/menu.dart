@@ -44,20 +44,3 @@ class OpcionesMenu<O>{
   OpcionesMenu({required this.valor, required this.texto});
 }
 
-void main(List<String> arguments)
-{
-  final menu1=Menu<String>(etiqueta: "Eres un desarrollador? [Si/No]", opciones: [
-    OpcionesMenu(valor: "Si", texto: "Si"),
-    OpcionesMenu(valor: "No", texto: "No")] );
-  final menu2=Menu<int>(etiqueta: "Cual es tu lenguaje favorito?", opciones: [
-    OpcionesMenu(valor: 1, texto: "Dart"),
-    OpcionesMenu(valor: 2, texto: "Java"),
-    OpcionesMenu(valor: 3, texto: "Python"),
-    OpcionesMenu(valor: 4, texto: "Otro")]);
-
-    final opcionSeleccionada1=menu1.elijeOpcion();
-    final opcionSeleccionada2=menu2.elijeOpcion();
-
-    print("la opcion seleccionada en el primer menu es $opcionSeleccionada1");
-    print("la opcion seleccionada en el segundo menu es $opcionSeleccionada2");
-}

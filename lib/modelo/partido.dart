@@ -51,6 +51,11 @@ class Partido{
       _marcador["Jugador Visitante"]=jugador;
   }
 
+  void setNumeroSets(int numSets)
+  {
+      _numSets=numSets;
+  }
+
   ///Obtiene el valor del marcador del partido, devuelve un Map con los siguientes items
   ///"Jugador Local" devuelve us String con el nombre del jugador local
   ///"Jugador Visitante" devuelve us String con el nombre del jugador visitatne
@@ -135,7 +140,7 @@ class _GameSet{
   late bool tieBreak;
   late int _localTieBreak;
   late int _visitanteTieBreak;
-  late _Juego _juego;
+  late _JuegoStandard _juego;
   late Map<String,String> _marcadorSet;
   
 
@@ -145,7 +150,7 @@ class _GameSet{
     tieBreak=false;
     _localTieBreak=0;
     _visitanteTieBreak=0;
-    _juego=_Juego();
+    _juego=_JuegoStandard();
     _marcadorSet={
       "Juegos Locales":"0",
       "Juegos Visitantes":"0",
@@ -182,7 +187,7 @@ class _GameSet{
           if(_local>=6 && (_local-_visitante)>=2)
           {
             //Finaliza un set, reiniciamos el juego y actualizamos marcadador de set
-            _juego=_Juego();
+            _juego=_JuegoStandard();
             _marcadorSet["Puntos Locales"]=_juego.getPuntos()["Puntos Locales"];
             _marcadorSet["Puntos Visitantes"]=_juego.getPuntos()["Puntos Visitantes"];
             return true;
@@ -240,7 +245,7 @@ class _GameSet{
           if(_visitante>=6 && (_visitante-_local)>=2)
           {
             //Finaliza un set, reiniciamos el juego y actualizamos marcadador de set
-            _juego=_Juego();
+            _juego=_JuegoStandard();
             _marcadorSet["Puntos Locales"]=_juego.getPuntos()["Puntos Locales"];
             _marcadorSet["Puntos Visitantes"]=_juego.getPuntos()["Puntos Visitantes"];
             return true;
@@ -283,13 +288,15 @@ class _GameSet{
   }
 }
 
-class _Juego{
+
+
+class _JuegoStandard implements _JuegoTenisPadel{
 
   final List<String> _puntos=['00','15','30','40','AV'];
   late int _local;
   late int _visitante;
 
-  _Juego()
+  _JuegoStandard()
   {
     _local=0;
     _visitante=0;
@@ -303,6 +310,7 @@ class _Juego{
   ///Obtiene el valor de los puntos del juego, devuelve un Map con los siguientes items
   ///"Puntos Locales" devuelve un String con el valor de los puntos locales, a saber 00 15 30 40 AV
   ///"Puntos visitantes" devuelve un String con el valor de los puntos locales, a saber 00 15 30 40 AV
+  @override
   Map getPuntos()
   {
     final puntos=<String,String>{"Puntos Locales":_puntos[_local],"Puntos Visitantes":_puntos[_visitante]};
@@ -310,6 +318,7 @@ class _Juego{
   }
   ///Añade un punto al juego local, devuelve true si el juego ha acabado a favor del jugador local y false si continua
   ///Solo puede acabar si han superado los 40 y llevan dos puntos de ventaja
+  @override
   bool addLocalPoint()
   {
     _local++;
@@ -329,6 +338,7 @@ class _Juego{
   }
   ///Añade un punto al juego visitante, devuelve true si el juego ha acabado a favor de jugador visitante y false si continua
   ///Solo puede acabar si han superado los 40 y llevan dos puntos de ventaja
+  @override
   bool addVisitantePoint()
   {
     _visitante++;
@@ -348,4 +358,21 @@ class _Juego{
   }
   
 
+}
+
+abstract class _JuegoTenisPadel{
+
+  ///Obtiene el valor de los puntos del juego, devuelve un Map con los siguientes items
+  ///"Puntos Locales" devuelve un String con el valor de los puntos locales, a saber 00 15 30 40 AV
+  ///"Puntos visitantes" devuelve un String con el valor de los puntos locales, a saber 00 15 30 40 AV
+  Map getPuntos();
+  
+  ///Añade un punto al juego local, devuelve true si el juego ha acabado a favor del jugador local y false si continua
+  ///Solo puede acabar si han superado los 40 y llevan dos puntos de ventaja
+  bool addLocalPoint();
+  
+  ///Añade un punto al juego visitante, devuelve true si el juego ha acabado a favor de jugador visitante y false si continua
+  ///Solo puede acabar si han superado los 40 y llevan dos puntos de ventaja
+  bool addVisitantePoint();
+  
 }
