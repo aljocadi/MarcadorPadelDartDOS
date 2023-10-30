@@ -1,5 +1,3 @@
-import 'dart:io';
-
 
 void printMarcador(Map<String,dynamic> marcador, int numeroSets)
 {

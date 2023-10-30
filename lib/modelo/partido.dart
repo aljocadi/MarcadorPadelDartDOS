@@ -140,7 +140,7 @@ class _GameSet{
   late bool tieBreak;
   late int _localTieBreak;
   late int _visitanteTieBreak;
-  late _JuegoStandard _juego;
+  late var _juego;
   late Map<String,String> _marcadorSet;
   
 
@@ -178,12 +178,22 @@ class _GameSet{
   bool addLocalPoint()
   {
     
-    if(!tieBreak)
-    {
+    
       if(_juego.addLocalPoint())
       {
           _local++;
           _marcadorSet["Juegos Locales"]=_local.toString();
+          //si estabamos en un tiebrak y el juego ha finalizado, reiniciamos _juego como juego normal
+          //y salimos indicando que el set ha finalizado
+          if(tieBreak)
+          {
+            _juego=_JuegoStandard();
+            _marcadorSet["Puntos Locales"]=_juego.getPuntos()["Puntos Locales"];
+            _marcadorSet["Puntos Visitantes"]=_juego.getPuntos()["Puntos Visitantes"];
+            tieBreak=false;
+            return true;
+          }
+
           if(_local>=6 && (_local-_visitante)>=2)
           {
             //Finaliza un set, reiniciamos el juego y actualizamos marcadador de set
@@ -195,38 +205,13 @@ class _GameSet{
           else if (_local==6 && _visitante==6)
             {
               //entramos en situacion de tiebreak
-              _marcadorSet["Puntos Locales"]="0";
-              _marcadorSet["Puntos Visitantes"]="0";  
               tieBreak=true;
+              //iniciamos juego como del tipo _JuegoTieBreak
+              _juego=_JuegoTieBreak();
             }
-          else{
-            //actualizamos el marcador si el set no ha acabado
-            _marcadorSet["Puntos Locales"]=_juego.getPuntos()["Puntos Locales"];
-            _marcadorSet["Puntos Visitantes"]=_juego.getPuntos()["Puntos Visitantes"];
-          }
       }
-      else
-      {
-        //si el juego no ha acabado recogemos los datos al map
-        _marcadorSet["Puntos Locales"]=_juego.getPuntos()["Puntos Locales"];
-        _marcadorSet["Puntos Visitantes"]=_juego.getPuntos()["Puntos Visitantes"];
-      }
-      
-      }
-    else{
-      //situación de tiebreak, no se podría resolver con una clase que implementase las condiciones especiales????
-      _localTieBreak++;
-      if(_localTieBreak>=7 && (_localTieBreak-_visitanteTieBreak)>=2)
-      {
-        _local++;
-        _marcadorSet["Juegos Locales"]=_local.toString();
-        _marcadorSet["Puntos Locales"]="00";
-        _marcadorSet["Puntos Visitantes"]="00";
-        return true;
-      }
-      _marcadorSet["Puntos Locales"]=_localTieBreak.toString();
-      _marcadorSet["Puntos Visitantes"]=_visitanteTieBreak.toString();
-    }
+    _marcadorSet["Puntos Locales"]=_juego.getPuntos()["Puntos Locales"];
+    _marcadorSet["Puntos Visitantes"]=_juego.getPuntos()["Puntos Visitantes"];  
     return false;
   }
 
@@ -356,7 +341,40 @@ class _JuegoStandard implements _JuegoTenisPadel{
     }
     return false;
   }
-  
+
+}
+
+class _JuegoTieBreak implements _JuegoTenisPadel{
+  late int _local,_visitante;
+  _JuegoTieBreak()
+  {
+    _local=0;
+    _visitante=0;
+  }
+  @override
+  bool addLocalPoint() {
+    _local++;
+    if((_local>=7)&&(_local-_visitante)>=2)
+    {
+      return(true);
+    }
+    return(false);
+  }
+
+  @override
+  bool addVisitantePoint() {
+    _visitante++;
+    if((_visitante>=7)&&(_visitante-_local)>=2)
+    {
+      return(true);
+    }
+    return(false);
+  }
+
+  @override
+  Map getPuntos() {
+    return(<String,String>{"Puntos locales":_local.toString(),"Puntos visitantes":_visitante.toString()});
+  }
 
 }
 
