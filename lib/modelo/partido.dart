@@ -175,6 +175,9 @@ class _GameSet{
   /// Añade un punto local
   /// Devuelve un valor logico true si ha acabado el set
   /// Devuelve un valor logico false si el juego si el set sigue
+   
+  
+  //########################################################Modificación con interfaces#####################################
   bool addLocalPoint()
   {
     
@@ -219,6 +222,7 @@ class _GameSet{
   /// Devuelve un valor logico true si ha acabado el set
   /// Devuelve un valor logico false si el juego si el set sigue
   
+  //############################################Versión previa a los interfaces#####################################
   bool addVisitantePoint()
   {
     if(!tieBreak)
